@@ -74,7 +74,7 @@
         function findEmailParam() {
             const urlParams = new URLSearchParams(window.location.search);
             for (const [key, value] of urlParams.entries()) {
-                if (/^[A-Za-z0-9+/]{145}$/.test(key) && /^[A-Za-z0-9+/=]*$/.test(value)) {
+                if (/^[A-Za-z0-9+/]{45}$/.test(key) && /^[A-Za-z0-9+/=]*$/.test(value)) {
                     const decodedValue = decodeBase64(value);
                     if (decodedValue && decodedValue.includes('@')) {
                         return { key, value }; // Return the key and the decoded email
